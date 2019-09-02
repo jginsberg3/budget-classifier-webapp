@@ -18,7 +18,7 @@ router.post('/incoming_mail', (req, res) => {
     try {
         const parsedLines = req.body.plain
             .split('\n')
-            .filter((line) => line.includes(' - '))
+            .filter((line) => line.includes('$'))
             .map((line) => {
                 pLine = line.match(/(\d+\/\d+) (\$\S{1,}) (.+$)/)
                 return {
