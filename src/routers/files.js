@@ -1,5 +1,8 @@
+const fs = require('fs')
 const express = require('express')
-// const fs = require('fs')
+const ObjectsToCsv = require('objects-to-csv')
+const predict = require('../utils/predict')
+const sendResultEmail = require('../emails/result')
 
 router = express.Router()
 
@@ -24,26 +27,23 @@ router.post('/incoming_mail', (req, res) => {
                     description: pLine[3]
                 }
             })
-        data = JSON.stringify({data: parsedLines})
-        console.log(data)
+        const data = {data: parsedLines}
+
+        predict(data, async (error, body) => {
+            const predictions = body
+
+            const csv = new ObjectsToCsv(predictions)
+            const flName = './predictions.csv'
+            await csv.toDisk(flName)
+
+            sendResultEmail('jginsberg3@gmail.com', flName)
+            fs.unlinkSync(flName)
+        })
+
         res.send('thanks!')
     } catch {
         return res.status(500).send()
     }
-
-
-    // fs.writeFileSync('data.json', data)
-    // DONT want to write to file
-    // everything that happens next has to happen inside this post request
-    // b/c the email must trigger all events
-    // next, need to use request to send json data (the "data" object) to python endpoint
-    // see here: https://www.npmjs.com/package/request#multipartform-data-multipart-form-uploads
-
-    
 })
-
-
-
-
 
 module.exports = router
