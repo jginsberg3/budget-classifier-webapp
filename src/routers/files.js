@@ -16,6 +16,7 @@ router.post('/incoming_mail', (req, res) => {
         return res.status(400).send()
     }
     try {
+        const sender = req.body.envelope.from
         const parsedLines = req.body.plain
             .split('\n')
             .filter((line) => line.includes('$'))
@@ -36,7 +37,7 @@ router.post('/incoming_mail', (req, res) => {
             const flName = './predictions.csv'
             await csv.toDisk(flName)
 
-            sendResultEmail('jginsberg3@gmail.com', flName)
+            sendResultEmail(sender, flName)
             fs.unlinkSync(flName)
         })
 
