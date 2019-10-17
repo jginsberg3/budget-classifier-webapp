@@ -24,7 +24,7 @@ To add to budget tracker
 - the format for each entry must be as follows:
   
   1. date (using "/")
-  2. ammount (including "$", "." is optional)
+  2. ammount (Must include "$".  The "." is optional.)
   3. description
 
   *for reference, the regex used to parse each entry line is: `(\d+\/\d+) (\$\S{1,}) (.+$)`
